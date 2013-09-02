@@ -95,10 +95,10 @@ def entry(prefix, argv=sys.argv[1:], parser=None):
             else:
                 if mod.__name__ != prefix:
                     func = getattr(mod, 'main')
-                    rc = func(args)
+                    rc = func(args[ii:])
                     if rc is None:
                         rc = 0
-                        sys.exit(rc)
+                    sys.exit(rc)
                 else: 
                     pass # command not found
     else:
