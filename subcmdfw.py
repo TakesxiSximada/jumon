@@ -71,29 +71,36 @@ def entry(prefix, argv=sys.argv[1:], parser=None):
     if not parser:
         parser = TransparentOptionParser()
     opts, args = parser.parse_args(argv)
+
+    if prefix.endswith('.'):
+        prefix = prefix.strip('.')
     
     subcmds = args
     prefixes = prefix.split('.')
-    for ii in range(len(len(prefixes), 0, -1)):
+    for ii in range(len(prefixes), 0, -1):
         modnames = prefixes + subcmds[:ii]
         doted_name = '.'.join(modnames)
         
         try:
-            mod = __import__(doted_name)
+            base_mod = __import__(doted_name)
         except ImportError:
             continue
         else:
             try:
-                for name in names[1:]:
+                mod = base_mod
+                for name in modnames[1:]:
                     mod = getattr(mod, name)
             except AttributeError:
                 continue
             else:
-                func = getattr(mod, 'main')
-                rc = func(args)
-                if rc is None:
-                    rc = 0
-                sys.exit(rc)
+                if mod.__name__ != prefix:
+                    func = getattr(mod, 'main')
+                    rc = func(args)
+                    if rc is None:
+                        rc = 0
+                        sys.exit(rc)
+                else: 
+                    pass # command not found
     else:
         parser.error('Command Not Found: {0}'.format(' '.join(argv)))
                 
