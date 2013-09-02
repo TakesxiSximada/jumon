@@ -17,7 +17,7 @@ except:
 requires = []
 
 setup(
-    name='dqn',
+    name='subcmdfw',
     version='0.1',
     url='https://bitbucket.org/takesxi_sximada/subcmdfw',
     download_url='https://bitbucket.org/takesxi_sximada/subcmdfw',
