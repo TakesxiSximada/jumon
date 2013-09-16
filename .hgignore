@@ -1,0 +1,17 @@
+syntax: regexp
+.*~$
+.*\#$
+.*\.db$
+.*\.log$
+.*\.pyc$
+.*\.orig$
+.*\.bmp$
+^@.*
+^\..*
+
+syntax: glob
+examples/doc/*
+
+# The Mercurial ignore "." prefix.
+# The Sphinx ignore "_" prefix.
+# Both ignore "@" prefix.
