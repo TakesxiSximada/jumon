@@ -2,5 +2,5 @@
 import jumon
 
 def main():
-    jumon.entry('testr.command')
+    jumon.entry(__name__)
     
