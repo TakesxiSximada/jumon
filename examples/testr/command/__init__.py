@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
-import subcmdfw
+import jumon
 
 def main():
-    subcmdfw.entry('testr.command')
+    jumon.entry('testr.command')
     
