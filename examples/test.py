@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 #-*- coding: utf-8 -*-
 
-import testr.command
+import testcmd.command
 
-testr.command.main()
+if __name__ == '__main__':
+    testcmd.command.main()
