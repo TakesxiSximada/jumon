@@ -19,8 +19,8 @@ requires = []
 setup(
     name='subcmdfw',
     version='0.1',
-    url='https://bitbucket.org/takesxi_sximada/subcmdfw',
-    download_url='https://bitbucket.org/takesxi_sximada/subcmdfw',
+    url='https://bitbucket.org/takesxi_sximada/jumon',
+    download_url='https://bitbucket.org/takesxi_sximada/jumon',
     license='GNU General Public License Version 3',
     author='TakesxiSximada',
     author_email='takesxi.sximada@gmail.com',
@@ -38,7 +38,7 @@ setup(
         'Topic :: Utilities',
     ],
     platforms='any',
-    py_modules=['subcmdfw'],
+    py_modules=['jumon'],
     include_package_data=True,
     install_requires=requires,
 )
