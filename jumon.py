@@ -2,6 +2,7 @@
 import sys
 import optparse
 
+
 class TransparentOptionParser(optparse.OptionParser):
     # over ride on arguments from 'rargs' 'values' consuming.
     def _process_args(self, largs, rargs, values):
@@ -35,7 +36,7 @@ class TransparentOptionParser(optparse.OptionParser):
             elif arg[:1] == "-" and len(arg) > 1:
                 # process a cluster of short options (possibly with
                 # value(s) for the last one only)
-                _through_option(self._process_short_opts, rargs, values) # modified
+                _through_option(self._process_short_opts, rargs, values) #modified
             elif self.allow_interspersed_args:
                 largs.append(arg)
                 del rargs[0]
@@ -67,6 +68,7 @@ class TransparentOptionParser(optparse.OptionParser):
             args = list(args)
         return optparse.OptionParser.parse_args(self, args, values)
 
+
 def entry(prefix, argv=sys.argv[1:], parser=None):
     if not parser:
         parser = TransparentOptionParser()
@@ -74,13 +76,12 @@ def entry(prefix, argv=sys.argv[1:], parser=None):
 
     if prefix.endswith('.'):
         prefix = prefix.strip('.')
-    
     subcmds = args
     prefixes = prefix.split('.')
     for ii in range(len(prefixes), 0, -1):
         modnames = prefixes + subcmds[:ii]
         doted_name = '.'.join(modnames)
-        
+
         try:
             base_mod = __import__(doted_name)
         except ImportError:
@@ -99,13 +100,7 @@ def entry(prefix, argv=sys.argv[1:], parser=None):
                     if rc is None:
                         rc = 0
                     sys.exit(rc)
-                else: 
-                    pass # command not found
+                else:
+                    pass
     else:
         parser.error('Command Not Found: {0}'.format(' '.join(argv)))
-                
-                
-        
-
-                    
-    
