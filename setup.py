@@ -17,7 +17,7 @@ except:
 requires = []
 
 setup(
-    name='subcmdfw',
+    name='jumon',
     version='0.1',
     url='https://bitbucket.org/takesxi_sximada/jumon',
     download_url='https://bitbucket.org/takesxi_sximada/jumon',
