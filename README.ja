@@ -1,0 +1,123 @@
+.. -*- coding: utf-8 -*-
+
+************************************************************
+jumon - サブコマンドのためのフレームワーク
+************************************************************
+
+インストール
+============================
+
+インストールは非常に簡単です。
+ソースコードのルートディレクトリに移動していつものアレを実行します。::
+
+    $ python setup.py install
+
+
+使い方
+==============
+
+ここではexampleに入っているtestcmdパッケージにそって使い方を説明します。
+
+トップコマンドを設置する
+-------------------------------
+
+トップコマンドを設置するファイルはパッケージの__init__.pyでなければなりません。
+次のように記述します。
+
+testcmd/command/__init__.py::
+  
+    import jumon
+
+    def main():
+        jumon.entry(__name__)
+
+この時のパッケージはサブパッケージであってもかまいません。
+jumon.entry()を設置したパッケージの全てのパッケージとモジュールが
+サブコマンドの対象になります。
+
+実際のコマンドはここで作成したmain()関数を呼び出してください。
+例えば ``setup.py`` に次の用に記述すると
+*python setup.py install* 実行時に *testcmd* というコマンドが配置されるでしょう。
+
+::
+
+    #-*- coding: utf-8 -*-
+    from setuptools import setup, find_packages
+    setup(
+        name='testcmd',
+        version='1',
+        license='BSD',
+        author='TakesxiSximada',
+        author_email='takesxi.sximada@gmail.com',
+        packages=find_packages(),
+        entry_points = """\
+        [console_scripts]
+        testcmd = testcmd.command:main
+        """
+    )
+
+
+ここが重要です。::
+
+        entry_points = """\
+        [console_scripts]
+        testcmd = testcmd.command:main
+        """
+
+サブコマンドを設置する
+-------------------------------
+
+サブコマンドは *jumon.entry()* を設置したパッケージの
+サブモジュールまたはサブパッケージが対象になります。
+サブモジュール又はサブパッケージはmain()関数を持っていなければまりません。
+import可能なモジュールの名前がそのままサブコマンドの名前になります。
+
+
+例えば *testcmd aaa* というサブコマンドを作成してみましょう。
+このコマンドは単純に *OK* とprintするだけのコマンドです。
+次のようになります。
+
+testcmd/command/aaa.py::
+
+    def main(argv):
+        print 'OK'
+
+*argv* には *sys.argv[1:]* の中でサブコマンドとして認識された文字列より
+後ろにある引数と処理されなかったオプションが渡されます。
+
+次に *testcmd bbb* というサブコマンドを追加してみましょう。
+ただし *testcmd bbb ccc* というサブコマンドもあるものとします。
+
+testcmd/command/bbb/__init__.py::
+
+    def main(argv):
+        print 'bbb'
+
+testcmd/command/bbb/ccc.py::
+
+    def main(argv):
+        print 'ccc'
+
+
+*testcmd bbb* が必要なければ *testcmd.command.bbb.main()* は必要ありませんが
+*testcmd/command/bbb/__init__.py* は作成してください。
+importできる状態でないとコマンドを探せないからです。
+
+
+定義していないオプションを透過したい時は...
+-------------------------------------------------
+
+*jumon.TransparentOptionParser()* を使ってください。
++optparse.OptionParser()* では定義されていないオプションを渡した場合エラーしますが
+*jumon.TransparentOptionParser()* ではエラーしません。
+定義されてないオプションは
+*jumon.TransparentOptionParser.parse_args()* の第2戻り値として返されます。
+
+
+例えば既存のコマンドをラッピングしたい場合オペレータが与えたオプションは
+そのまま既存のコマンドに渡したいところですが、
+引数によって事前の処理をかえたい場合は
+事前に *optparse.OptionParser()* で解析したい場合があります。
+*optparse.OptionParser()* は登録していないオプション文字列が渡された場合エラーします。
+しかし *jumon.TransparentOptionParser()* は無視して引数と同じように扱うのです。
+従って返された *args* を既存のコマンドに渡してやればよいのです。
