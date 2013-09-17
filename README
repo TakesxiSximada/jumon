@@ -12,15 +12,14 @@ Use ``setup.py`` in the source code root directory::
     $ python setup.py install
 
 How to use
-==========
+============
 
-ここではexampleに入っているtestcmdパッケージにそって使い方を説明します。
+This is a description of how to use the jumon.
 
-トップコマンドを設置する
+
+Create the top command
 -------------------------------
 
-トップコマンドを設置するファイルはパッケージの__init__.pyでなければなりません。
-次のように記述します。
 
 testcmd/command/__init__.py::
   
@@ -29,15 +28,7 @@ testcmd/command/__init__.py::
     def main():
         jumon.entry(__name__)
 
-この時のパッケージはサブパッケージであってもかまいません。
-jumon.entry()を設置したパッケージの全てのパッケージとモジュールが
-サブコマンドの対象になります。
-
-実際のコマンドはここで作成したmain()関数を呼び出してください。
-例えば ``setup.py`` に次の用に記述すると
-*python setup.py install* 実行時に *testcmd* というコマンドが配置されるでしょう。
-
-::
+setup.py::
 
     #-*- coding: utf-8 -*-
     from setuptools import setup, find_packages
@@ -55,35 +46,22 @@ jumon.entry()を設置したパッケージの全てのパッケージとモジ�
     )
 
 
-ここが重要です。::
+This is important::
 
         entry_points = """\
         [console_scripts]
         testcmd = testcmd.command:main
         """
 
-サブコマンドを設置する
+Create sub commands
 -------------------------------
 
-サブコマンドは *jumon.entry()* を設置したパッケージの
-サブモジュールまたはサブパッケージが対象になります。
-サブモジュール又はサブパッケージはmain()関数を持っていなければまりません。
-import可能なモジュールの名前がそのままサブコマンドの名前になります。
-
-
-例えば *testcmd aaa* というサブコマンドを作成したい場合は次のようになります。
 
 testcmd/command/aaa.py::
 
     def main(argv):
         print 'OK'
 
-
-これは単純に *OK* とprintするだけのコマンドです。
-*argv* には *sys.argv[1:]* が渡されます。
-
-次に *testcmd bbb* というサブコマンドを追加してみましょう。
-ただし *testcmd bbb ccc* というサブコマンドもあるものとします。
 
 testcmd/command/bbb/__init__.py::
 
@@ -95,9 +73,32 @@ testcmd/command/bbb/ccc.py::
     def main(argv):
         print 'ccc'
 
+example::
 
-*testcmd bbb* が必要なければ *testcmd.command.bbb.main()* は必要ありませんが
-*testcmd/command/bbb/__init__.py* は作成してください。
-importできる状態でないとコマンドを探せないからです。
+    $ pip install ./examples   
+    Unpacking ./examples
+      Running setup.py egg_info for package from 
+
+    Cleaning up...
+
+    $ testcmd aaa
+    OK
+
+    $ testcmd bbb
+    bbb
+
+    $ testcmd bbb ccc
+    ccc
+
+    $ testcmd bbb ddd a
+    a_func []
+    $ testcmd bbb ddd b
+    b_func []
+    $ testcmd bbb ddd c
+    c_func []
 
 
+Do you want to transparenting the undefined options?
+---------------------------------------------------------
+
+You can use *jumon.TransparentOptionParser()* class.
