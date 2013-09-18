@@ -1,5 +1,7 @@
 `jumon` is a small framework for sub commands.
 
+The jumon is a small framework for sub commands,
+It can define sub commands as modules hierarchical structure.
 
 Installing
 ==========
