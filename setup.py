@@ -16,9 +16,10 @@ except:
     
 requires = []
 
+pkg = __import__('jumon')
 setup(
-    name='jumon',
-    version='1.0',
+    name=pkg.__name__,
+    version=pkg.__version__,
     url='https://bitbucket.org/takesxi_sximada/jumon',
     download_url='https://bitbucket.org/takesxi_sximada/jumon',
     license='Apache License 2.0',
