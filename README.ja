@@ -121,3 +121,24 @@ importできる状態でないとコマンドを探せないからです。
 *optparse.OptionParser()* は登録していないオプション文字列が渡された場合エラーします。
 しかし *jumon.TransparentOptionParser()* は無視して引数と同じように扱うのです。
 従って返された *args* を既存のコマンドに渡してやればよいのです。
+
+この例では定義されていないオプション文字列を透過しています。::
+
+    >>> import jumon
+    >>> parser = jumon.TransparentOptionParser()
+    >>> opts, args = parser.parse_args(['-f', '-n', '1'])
+    >>> args
+    ['-f', '-n', '1']
+
+
+オプションとして認識されていないため *opts* のアトリビュートととしては存在しません。::
+
+    >>> opts.f
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    AttributeError: Values instance has no attribute 'f'
+    >>> opts.n
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    AttributeError: Values instance has no attribute 'n'
+

@@ -1,16 +1,18 @@
-.. -*- coding: utf-8 -*-
+`jumon` is a small framework for sub commands.
 
-************************************
-The Framework of th sub command for
-************************************
 
 Installing
 ==========
-
 Use ``setup.py`` in the source code root directory::
 
     $ python setup.py install
 
+by pip (from PyPI)
+-------------------
+::
+
+    $ pip install jumon
+    
 How to use
 ============
 
@@ -27,6 +29,7 @@ testcmd/command/__init__.py::
 
     def main():
         jumon.entry(__name__)
+
 
 setup.py::
 
@@ -102,3 +105,21 @@ Do you want to transparenting the undefined options?
 ---------------------------------------------------------
 
 You can use *jumon.TransparentOptionParser()* class.
+
+::
+
+    >>> import jumon
+    >>> parser = jumon.TransparentOptionParser()
+    >>> opts, args = parser.parse_args(['-f', '-n', '1'])
+    >>> args
+    ['-f', '-n', '1']
+
+
+
+Requirements
+============
+* Python 2.6 or laterr (not supprt 3.x)
+
+License
+=======
+Apache License 2.0
