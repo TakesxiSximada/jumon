@@ -16,6 +16,17 @@ except:
     
 requires = []
 
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Text Processing :: Markup",
+]
+
+
 pkg = __import__('jumon')
 setup(
     name=pkg.__name__,
@@ -28,15 +39,7 @@ setup(
     description='The small framework for sub commands.',
     long_description=long_desc,
     zip_safe=False,
-    classifiers=[
-        'Development Status :: 3 - Alpha',
-        'Environment :: Console',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apple Public Source License',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python',
-        'Topic :: Utilities',
-    ],
+    classifiers=classifiers,
     platforms='any',
     py_modules=['jumon'],
     include_package_data=True,
