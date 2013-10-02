@@ -31,7 +31,7 @@ pkg = __import__('jumon')
 setup(
     name=pkg.__name__,
     version=pkg.__version__,
-    url='https://bitbucket.org/takesxi_sximada/jumon',
+    url='http://sximadaw3.web.fc2.com/work/jumon',
     download_url='https://bitbucket.org/takesxi_sximada/jumon',
     license='Apache License 2.0',
     author='TakesxiSximada',
