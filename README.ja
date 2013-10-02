@@ -4,43 +4,177 @@
 jumon - サブコマンドのためのフレームワーク
 ************************************************************
 
-jumonはサブコマンドのための小さなフレームワークです。
-これを使うことで、サブコマンドをモジュールの階層構造として定義することができます。
-サブコマンドが階層化されるため可視性が向上します。
+jumonはサブコマンドを実装するための小さなフレームワークです。
+パッケージ内のサブモジュールの階層構造を、
+そのままサブコマンドとして実装することができます。
+jumonは渡された引数からimport可能なサブモジュールを探し出し
+そのサブモジュール内のmain関数を引数付きで実行します。
+
+サブモジュールの階層構造をそのままサブコマンドとして実装しますので、
+例えばtreeコマンド等でサブコマンドがどのような階層構造になっているのかを
+表示する事ができます。
+どのコマンドがどこに定義されているのか非常に見やすくなるでしょう。
+
+あなたがサブコマンドを作成しようとしているのであれば
+ぜひjumonの導入を検討してください。
+きっとあなたのサブコマンドは見通しがよくなるでしょう。
+
 
 インストール
 ============================
 
-インストールは非常に簡単です。
-ソースコードのルートディレクトリに移動していつものアレを実行します。::
+インストールは非常に簡単です。::
 
-    $ python setup.py install
-
+    $ pip install jumon
 
 使い方
 ==============
 
-ここではexampleに入っているtestcmdパッケージにそって使い方を説明します。
+使い方も非常に簡単です。
+ここではtestcmdというパッケージを作成して
+そのサブパッケージcommmand配下にサブコマンドを実装していきます。
 
-トップコマンドを設置する
--------------------------------
+パッケージ用のディレクトリを作成しておきます。
+::
 
-トップコマンドを設置するファイルはパッケージの__init__.pyでなければなりません。
-次のように記述します。
+    $ mkdir testcmd
+    $ touch testcmd/__init__.py
+    $ mkdir testcmd/command
+
+
+まずコマンドの最上位となるパッケージに次を記述します。
+
+::
+
+    $ touch testcmd/command/__init__.py
+
 
 testcmd/command/__init__.py::
-  
+
     import jumon
 
     def main():
         jumon.entry(__name__)
 
-この時のパッケージはサブパッケージであってもかまいません。
-jumon.entry()を設置したパッケージの全てのパッケージとモジュールが
-サブコマンドの対象になります。
 
-実際のコマンドはここで作成したmain()関数を呼び出してください。
-例えば ``setup.py`` に次の用に記述すると
+jumon.entry(__name__)を記述したパッケージの配下にある
+サブパッケージがコマンド検索の対象になります。
+jumon.entry(__name__)の記述はサブパッケージでもかまいません。
+
+
+次にサブコマンドとなるサブモジュールを作成します。
+サブコマンド名は aaa です。
+
+::
+
+    $ touch testcmd/command/aaa.py
+
+testcmd/command/aaa.py::
+
+    def main(argv):
+        print 'OK'
+        return 0
+
+
+このコマンドでは *OK* という文字列をprintして
+終了ステータス0で終了します。
+
+
+サブコマンドのサブコマンドも実装できます。
+その場合は最下位のサブコマンド以外は、
+モジュールではなくパッケージとして定義する必要があります。
+
+
+::
+
+    $ mkdir testcmd/command/bbb
+    $ touch testcmd/command/bbb/__init__.py
+    $ touch testcmd/command/bbb/ccc.py
+
+
+testcmd/command/bbb/__init__.py::
+
+    def main(argv):
+        print 'bbb'
+        return 1
+
+testcmd/command/bbb/ccc.py::
+
+    def main(argv):
+        print 'ccc'
+        return 2
+
+
+bbb というサブコマンドと bbb ccc というサブコマンドを実装しました。
+bbb というサブコマンドは *bbb* という文字列をprintした後、
+終了ステータス1で終了します。
+bbb ccc というサブコマンドは *ccc* という文字列をprintした後、
+終了ステータス2で終了します。
+
+
+最後に実際にコマンドを設置してみましょう。
+最上位のコマンドの名前は何でもよいので適当な名前のファイルを作成します。
+そしてjumon.entry(__entry__)を定義した関数を呼ぶようにしてください。
+今回はtest.pyというファイルにコマンドを定義します。
+
+上記で作成したモジュール全体をimportできる状態にしてください。
+(site-packages/配下に設置すればよいです。)
+
+
+次のファイルを作成します。
+
+::
+
+    $ touch test.py
+
+test.py::
+
+    #! /usr/bin/env python
+    import testcmd.command
+    
+    def main():
+        testcmd.command.main()
+
+    if __name__ == '__main__':
+        main()
+
+作成したファイルに実行権限を与えます。::
+
+    $ chmod 755 test.py
+
+では実行してみましょう。
+引数を渡さないとusageを表示します。::
+
+    $ ./test.py    
+    Usage: test.py [options]
+
+    test.py: error: Command Not Found: 
+
+サブコマンドaaaはOKをprintします。::
+
+    $ ./test.py aaa
+    OK
+    $ echo $?
+    0
+
+サブコマンドbbbは文字列bbbをprintします。::
+
+    $ ./test.py bbb
+    bbb
+    $ echo $?
+    1
+
+サブコマンドcccは文字列cccをprintします。::
+
+    $ ./test.py bbb ccc
+    ccc
+    $ echo $?
+    2
+
+
+setup.pyでコマンドを作成する場合は？
+----------------------------------------------
+setup.pyに次の記述をすると
 *python setup.py install* 実行時に *testcmd* というコマンドが配置されるでしょう。
 
 ::
@@ -68,47 +202,8 @@ jumon.entry()を設置したパッケージの全てのパッケージとモジ�
         testcmd = testcmd.command:main
         """
 
-サブコマンドを設置する
--------------------------------
 
-サブコマンドは *jumon.entry()* を設置したパッケージの
-サブモジュールまたはサブパッケージが対象になります。
-サブモジュール又はサブパッケージはmain()関数を持っていなければまりません。
-import可能なモジュールの名前がそのままサブコマンドの名前になります。
-
-
-例えば *testcmd aaa* というサブコマンドを作成してみましょう。
-このコマンドは単純に *OK* とprintするだけのコマンドです。
-次のようになります。
-
-testcmd/command/aaa.py::
-
-    def main(argv):
-        print 'OK'
-
-*argv* には *sys.argv[1:]* の中でサブコマンドとして認識された文字列より
-後ろにある引数と処理されなかったオプションが渡されます。
-
-次に *testcmd bbb* というサブコマンドを追加してみましょう。
-ただし *testcmd bbb ccc* というサブコマンドもあるものとします。
-
-testcmd/command/bbb/__init__.py::
-
-    def main(argv):
-        print 'bbb'
-
-testcmd/command/bbb/ccc.py::
-
-    def main(argv):
-        print 'ccc'
-
-
-*testcmd bbb* が必要なければ *testcmd.command.bbb.main()* は必要ありませんが
-*testcmd/command/bbb/__init__.py* は作成してください。
-importできる状態でないとコマンドを探せないからです。
-
-
-定義していないオプションを透過したい時は...
+定義していないオプションを透過したい時は?
 -------------------------------------------------
 
 *jumon.TransparentOptionParser()* を使ってください。
