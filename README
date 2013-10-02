@@ -1,7 +1,19 @@
 `jumon` is a small framework for sub commands.
 
-The jumon is a small framework for sub commands,
-It can define sub commands as modules hierarchical structure.
+The jumon is a small framework for implementing the sub command.
+You can be implemented sub commands,
+as the hierarchial structure of the sub modules in the packages.
+It finds importable sub module from the arguments passed,
+Runs main function in the importable sub module with arguments.
+
+You can be displayed the hierarchial structure of the sub commands
+with tree command etc, because it be implementing sub commands as 
+the hierarchial structure of the sub module.
+It will be easy to see where sub command has been implemented.
+
+Please consider to use `jumon`, if you are trying to implement the
+sub commands.
+
 
 Installing
 ==========
@@ -19,19 +31,121 @@ How to use
 ============
 
 This is a description of how to use the jumon.
+Let create a package called "testcmd", 
+and sub package called "testcmd.command".
 
+::
 
-Create the top command
--------------------------------
+    $ mkdir testcmd
+    $ touch testcmd/__init__.py
+    $ mkdir testcmd/command
+
+Let implementing sub commands in "testcmd.command" subordinate.
+
+First, create top level command.::
+
+    $ touch testcmd/command/__init__.py
 
 
 testcmd/command/__init__.py::
-  
+
     import jumon
 
     def main():
         jumon.entry(__name__)
 
+Under this package is the search range of sub commands.
+
+Next, create sub command.::
+
+    $ touch testcmd/command/aaa.py
+
+testcmd/command/aaa.py::
+
+    def main(argv):
+        print 'OK'
+        return 0
+
+
+This commamd is printed string "OK", and end with exit code 0.
+
+You can be implemented sub command of sub command.::
+
+    $ mkdir testcmd/command/bbb
+    $ touch testcmd/command/bbb/__init__.py
+    $ touch testcmd/command/bbb/ccc.py
+
+
+testcmd/command/bbb/__init__.py::
+
+    def main(argv):
+        print 'bbb'
+        return 1
+
+testcmd/command/bbb/ccc.py::
+
+    def main(argv):
+        print 'ccc'
+        return 2
+
+I implemented sub commands, called "bbb" and "bbb ccc".
+This commamd "bbb" is printed string "bbb", and end with exit code 1.
+This commamd "bbb ccc" is printed string "ccc", and end with exit code 2.
+
+Next, install "testcmd".::
+
+    $ cp testcmd $SITE_PACKAGES -R
+
+
+Last, create command.::
+
+    $ touch test.py
+
+test.py::
+
+    #! /usr/bin/env python
+    import testcmd.command
+    
+    def main():
+        testcmd.command.main()
+
+    if __name__ == '__main__':
+        main()
+
+Add permission::
+
+    $ chmod 755 test.py
+
+Run, displayed usage.::
+
+    $ ./test.py    
+    Usage: test.py [options]
+
+    test.py: error: Command Not Found: 
+
+Run sub command "aaa".::
+
+    $ ./test.py aaa
+    OK
+    $ echo $?
+    0
+
+Run sub command "bbb".::
+
+    $ ./test.py bbb
+    bbb
+    $ echo $?
+    1
+
+Run sub command "bbb ccc".::
+
+    $ ./test.py bbb ccc
+    ccc
+    $ echo $?
+    2
+
+Do you want to created command with setup.py?
+-------------------------------------------------
 
 setup.py::
 
@@ -58,51 +172,6 @@ This is important::
         testcmd = testcmd.command:main
         """
 
-Create sub commands
--------------------------------
-
-
-testcmd/command/aaa.py::
-
-    def main(argv):
-        print 'OK'
-
-
-testcmd/command/bbb/__init__.py::
-
-    def main(argv):
-        print 'bbb'
-
-testcmd/command/bbb/ccc.py::
-
-    def main(argv):
-        print 'ccc'
-
-example::
-
-    $ pip install ./examples   
-    Unpacking ./examples
-      Running setup.py egg_info for package from 
-
-    Cleaning up...
-
-    $ testcmd aaa
-    OK
-
-    $ testcmd bbb
-    bbb
-
-    $ testcmd bbb ccc
-    ccc
-
-    $ testcmd bbb ddd a
-    a_func []
-    $ testcmd bbb ddd b
-    b_func []
-    $ testcmd bbb ddd c
-    c_func []
-
-
 Do you want to transparenting the undefined options?
 ---------------------------------------------------------
 
@@ -115,7 +184,6 @@ You can use *jumon.TransparentOptionParser()* class.
     >>> opts, args = parser.parse_args(['-f', '-n', '1'])
     >>> args
     ['-f', '-n', '1']
-
 
 
 Requirements
