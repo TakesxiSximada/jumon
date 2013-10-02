@@ -55,6 +55,7 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
+import os
 import sys
 import optparse
 
@@ -124,7 +125,14 @@ class TransparentOptionParser(optparse.OptionParser):
         return optparse.OptionParser.parse_args(self, args, values)
 
 
+def get_debug_switch():
+    try:
+        return os.environ['JUMON_DEBUG'] != ''
+    except KeyError:
+        pass
+
 def entry(prefix, argv=sys.argv[1:], parser=None):
+    _debug = get_debug_switch()
     if not parser:
         parser = TransparentOptionParser()
     opts, args = parser.parse_args(argv)
@@ -139,7 +147,9 @@ def entry(prefix, argv=sys.argv[1:], parser=None):
 
         try:
             base_mod = __import__(doted_name)
-        except ImportError:
+        except ImportError as err:
+            if _debug:
+                print err
             continue
         else:
             try:
