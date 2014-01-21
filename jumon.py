@@ -57,12 +57,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 import os
 import sys
+import shlex
 import optparse
 import subprocess
 
-def call(cmd, background=False, *args, **kwds):
-    print('$ ' + cmd)
-    child = subprocess.Popen(cmd.split(), shell=False, *args, **kwds)
+def call(line, background=False, *args, **kwds):
+    print('$ ' + line)
+    cmd = shlex.split(line.strip())
+    child = subprocess.Popen(cmd, shell=False, *args, **kwds)
     if not background:
         child.wait()
     return child
