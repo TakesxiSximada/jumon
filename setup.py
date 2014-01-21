@@ -22,8 +22,6 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python",
     "Topic :: Software Development",
-    "Topic :: Software Development :: Documentation",
-    "Topic :: Text Processing :: Markup",
 ]
 
 

@@ -1,13 +1,13 @@
 #-*- coding: utf-8 -*-
 """The small framework for sub commands.
 """
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 __all__ = ['TransparentOptionParser',
            'entry',
            ]
 
 __copyright__ = """
-Copyright (c) 2013 Takesxi Sximada. All rights reserved.
+Copyright (c) 2013-2014 Takesxi Sximada. All rights reserved.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -58,6 +58,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import os
 import sys
 import optparse
+import subprocess
+
+def call(cmd, background=False, *args, **kwds):
+    print('$ ' + cmd)
+    child = subprocess.Popen(cmd.split(), shell=False, *args, **kwds)
+    if not background:
+        child.wait()
+    return child
+
 
 class TransparentOptionParser(optparse.OptionParser):
     # over ride on arguments from 'rargs' 'values' consuming.
