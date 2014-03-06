@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 """The small framework for sub commands.
 """
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 __all__ = ['TransparentOptionParser',
            'TransparentArgumentParser',
            'Shell',
