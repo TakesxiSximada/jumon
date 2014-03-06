@@ -180,9 +180,12 @@ class TransparentOptionParser(optparse.OptionParser):
 
 class TransparentArgumentParser(argparse.ArgumentParser):
     def parse_args(self, *args, **kwds):
-        args, unrecognizes = self.parse_known_args(*args, **kwds)
+        args, _unrecognizes = self.parse_known_args(*args, **kwds)
         self.unrecognizes = unrecognizes
         return args
+
+    def get_unrecognizes(self):
+        return self._unrecognizes
 
 def get_debug_switch():
     try:
