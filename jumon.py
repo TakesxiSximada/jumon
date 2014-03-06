@@ -1,13 +1,15 @@
 #-*- coding: utf-8 -*-
 """The small framework for sub commands.
 """
-__version__ = "1.0.2"
+__version__ = "1.1.0"
 __all__ = ['TransparentOptionParser',
+           'Shell',
+           'Env',
            'entry',
            ]
 
 __copyright__ = """
-Copyright (c) 2013-2014 Takesxi Sximada. All rights reserved.
+Copyright (c) 2013-2014 TakesxiSximada. All rights reserved.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -60,6 +62,44 @@ import sys
 import shlex
 import optparse
 import subprocess
+
+def escape(word):
+    if ' ' in word:
+        word = word.replace('"', '\\"')
+        word = word.replace("'", "\\'")
+        word = '"' + word + '"'
+    return word
+
+def escape_join(words):
+    return ' '.join(map(escape, words))
+
+
+class Env(Enum):
+    JUMON_SUDO = ''
+
+    @classmethod
+    def get(self, env):
+        try:
+            return os.environ[env]
+        except KeyError as err:
+            return env.value
+
+class Shell(object):
+    @classmethod
+    def call(cls, line, *args, **kwds):
+        print('')
+        print('$ {}'.format(line))
+        if not 'shell' in kwds:
+            kwds['shell'] = True
+        return subprocess.Popen(line, *args, **kwds)
+
+    @classmethod
+    def sudo(cls, line, *args, **kwds):
+        sudo_user = Env.get(Env.JUMON_SUDO)
+        if sudo_user:
+            line = 'sudo -u {} {}'.format(sudo_user, line)
+        return cls.call(line, *args, **kwds)
+
 
 def call(line, background=False, *args, **kwds):
     print('$ ' + line)
