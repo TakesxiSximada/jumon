@@ -3,6 +3,7 @@
 """
 __version__ = "1.1.0"
 __all__ = ['TransparentOptionParser',
+           'TransparentArgumentParser',
            'Shell',
            'Env',
            'entry',
@@ -61,6 +62,7 @@ import os
 import sys
 import shlex
 import optparse
+import argparse
 import subprocess
 
 def escape(word):
@@ -175,6 +177,12 @@ class TransparentOptionParser(optparse.OptionParser):
             args = list(args)
         return optparse.OptionParser.parse_args(self, args, values)
 
+
+class TransparentArgumentParser(argparse.ArgumentParser):
+    def parse_args(self, *args, **kwds):
+        args, unrecognizes = self.parse_known_args(*args, **kwds)
+        self.unrecognizes = unrecognizes
+        return args
 
 def get_debug_switch():
     try:
