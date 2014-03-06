@@ -12,6 +12,10 @@ syntax: regexp
 syntax: glob
 examples/doc/*
 
+build/*
+dist/*
+jumon.egg-info/*
+
 # The Mercurial ignore "." prefix.
 # The Sphinx ignore "_" prefix.
 # Both ignore "@" prefix.
