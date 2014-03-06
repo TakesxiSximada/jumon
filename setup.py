@@ -13,8 +13,8 @@ try:
         long_desc = fp.read()
 except:
     long_desc = ''
-    
-requires = []
+
+requires = ['enum34']
 
 classifiers = [
     "Development Status :: 4 - Beta",

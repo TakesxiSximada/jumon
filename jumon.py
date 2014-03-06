@@ -64,6 +64,7 @@ import shlex
 import optparse
 import argparse
 import subprocess
+import enum
 
 def escape(word):
     if ' ' in word:
@@ -76,7 +77,7 @@ def escape_join(words):
     return ' '.join(map(escape, words))
 
 
-class Env(Enum):
+class Env(enum.Enum):
     JUMON_SUDO = ''
 
     @classmethod
