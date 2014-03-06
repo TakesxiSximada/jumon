@@ -129,7 +129,7 @@ test.py::
 
     #! /usr/bin/env python
     import testcmd.command
-    
+
     def main():
         testcmd.command.main()
 
@@ -143,10 +143,10 @@ test.py::
 では実行してみましょう。
 引数を渡さないとusageを表示します。::
 
-    $ ./test.py    
+    $ ./test.py
     Usage: test.py [options]
 
-    test.py: error: Command Not Found: 
+    test.py: error: Command Not Found:
 
 サブコマンドaaaはOKをprintします。::
 
@@ -204,11 +204,18 @@ setup.pyに次の記述をすると
 定義していないオプションを透過したい時は?
 -------------------------------------------------
 
-*jumon.TransparentOptionParser()* を使ってください。
-+optparse.OptionParser()* では定義されていないオプションを渡した場合エラーしますが
+*jumon.TransparentOptionParser()* か *jumon.TransparentArgumentParser()* を使ってください。
+*optparse.OptionParser()* では定義されていないオプションを渡した場合エラーしますが
 *jumon.TransparentOptionParser()* ではエラーしません。
 定義されてないオプションは
 *jumon.TransparentOptionParser.parse_args()* の第2戻り値として返されます。
+
+*jumon.TransparentArgumentParser()* を使った場合、
+*parse_args()* で返されるのは解析できた引数の情報が入ったNamespaceオブジェクトです。
+定義されていない引数やオプションは *parser.get_unrecognizes()* を使ってください。
+この実装は *argparse.ArgumentParser.parse_args()* と同じI/Fにする為です。
+そのため *argparse.ArgumentParser* を使用しているところは
+簡単に *jumon.TransparentArgumentParser* に置き換える事ができるでしょう。
 
 
 例えば既存のコマンドをラッピングしたい場合オペレータが与えたオプションは
@@ -238,4 +245,3 @@ setup.pyに次の記述をすると
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
     AttributeError: Values instance has no attribute 'n'
-
