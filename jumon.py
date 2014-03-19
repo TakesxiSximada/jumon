@@ -83,7 +83,7 @@ class Env(enum.Enum):
     @classmethod
     def get(self, env):
         try:
-            return os.environ[env]
+            return os.environ[env.name]
         except KeyError as err:
             return env.value
 
@@ -102,6 +102,18 @@ class Shell(object):
         if sudo_user:
             line = 'sudo -u {} {}'.format(sudo_user, line)
         return cls.call(line, *args, **kwds)
+
+
+def mkdir_p(path):
+    if not os.path.isdir(path):
+        os.makedirs(path)
+
+
+def mkdir(path, parents=False):
+    """                                                                                                                                                                                 parents: no error if existing, make parent directories as needed                                                                                                                    """
+    func = os.makedirs if parents else os.mkdir
+    if not (parents and os.path.join(path)):
+        func(path)
 
 
 def call(line, background=False, *args, **kwds):
@@ -210,7 +222,7 @@ def entry(prefix, argv=sys.argv[1:], parser=None):
 
         try:
             base_mod = __import__(doted_name)
-        except ImportError as err:
+        except (ImportError, ValueError) as err:
             if _debug:
                 print err
             continue
