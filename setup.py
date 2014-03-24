@@ -25,10 +25,9 @@ classifiers = [
 ]
 
 
-pkg = __import__('jumon')
 setup(
-    name=pkg.__name__,
-    version=pkg.__version__,
+    name='jumon',
+    version='1.1.1'
     url='http://sximadaw3.web.fc2.com/work/jumon',
     download_url='https://bitbucket.org/takesxi_sximada/jumon',
     license='Apache License 2.0',
