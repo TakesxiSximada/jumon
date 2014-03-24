@@ -81,7 +81,7 @@ class Env(enum.Enum):
     JUMON_SUDO = ''
 
     @classmethod
-    def get(self, env):
+    def get(cls, env):
         try:
             return os.environ[env.name]
         except KeyError as err:
@@ -103,6 +103,13 @@ class Shell(object):
             line = 'sudo -u {} {}'.format(sudo_user, line)
         return cls.call(line, *args, **kwds)
 
+    @classmethod
+    def system(cls, line):
+        print('')
+        print('$ {}'.format(line))
+        return os.system(line)
+
+
 
 def mkdir_p(path):
     if not os.path.isdir(path):
@@ -110,11 +117,15 @@ def mkdir_p(path):
 
 
 def mkdir(path, parents=False):
-    """                                                                                                                                                                                 parents: no error if existing, make parent directories as needed                                                                                                                    """
+    """
+    parents: no error if existing, make parent directories as needed
+    """
     func = os.makedirs if parents else os.mkdir
-    if not (parents and os.path.join(path)):
-        func(path)
-
+    try:
+        return func(path)
+    except:
+        if not parents:
+            raise
 
 def call(line, background=False, *args, **kwds):
     print('$ ' + line)
