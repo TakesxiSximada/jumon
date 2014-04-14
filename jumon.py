@@ -90,6 +90,7 @@ class Env(enum.Enum):
 class Shell(object):
     @classmethod
     def call(cls, line, *args, **kwds):
+        line = self.switch_insert_sudo(line, *args, **kwds)
         print('')
         print('$ {}'.format(line))
         if not 'shell' in kwds:
@@ -97,18 +98,38 @@ class Shell(object):
         return subprocess.Popen(line, *args, **kwds)
 
     @classmethod
+    def system(cls, line, *args, **kwds):
+        line = self.switch_insert_sudo(line, *args, **kwds)
+        print('')
+        print('$ {}'.format(line))
+        return os.system(line)
+
+    def switch_insert_sudo(self, line, sudo=None, *args, **kwds):
+        if sudo is True:
+            sudo = Env.get(Env.JUMON_SUDO)
+
+        if sudo:
+            line = 'sudo -u {} {}'.format(sudo, line)
+        return line
+
+    @classmethod
     def sudo(cls, line, *args, **kwds):
+        """
+        duplicated
+        """
         sudo_user = Env.get(Env.JUMON_SUDO)
         if sudo_user:
             line = 'sudo -u {} {}'.format(sudo_user, line)
         return cls.call(line, *args, **kwds)
 
     @classmethod
-    def system(cls, line):
+    def system_old(cls, line):
+        """
+        duplicated
+        """
         print('')
         print('$ {}'.format(line))
         return os.system(line)
-
 
 
 def mkdir_p(path):
