@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 """The small framework for sub commands.
 """
-__version__ = "1.1.1"
+__version__ = "1.1.2"
 __all__ = ['TransparentOptionParser',
            'TransparentArgumentParser',
            'Shell',
@@ -233,6 +233,24 @@ class TransparentArgumentParser(argparse.ArgumentParser):
         return self._unrecognizes
 
 def get_debug_switch():
+    """The debug switcher
+
+    >>> import os, jumon
+    >>> os.environ['JUMON_DEBUG'] = 'True'
+    >>> jumon.get_debug_switch()
+    True
+
+
+
+    >>> os.environ['JUMON_DEBUG'] = ''
+    >>> jumon.get_debug_switch()
+    None
+
+
+    >>> value = os.environ.pop('JUMON_DEBUG')
+    >>> jumon.get_debug_switch()
+    None
+    """
     try:
         return os.environ['JUMON_DEBUG'] != ''
     except KeyError:
