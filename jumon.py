@@ -91,7 +91,7 @@ class Shell(object):
 
     @classmethod
     def call(cls, line, *args, **kwds):
-        line = self.switch_insert_sudo(line, *args, **kwds)
+        line = cls.switch_insert_sudo(line, *args, **kwds)
         print('')
         print('$ {}'.format(line))
         if not 'shell' in kwds:
@@ -100,18 +100,20 @@ class Shell(object):
 
     @classmethod
     def system(cls, line, *args, **kwds):
-        line = self.switch_insert_sudo(line, *args, **kwds)
+        line = cls.switch_insert_sudo(line, *args, **kwds)
         print('')
         print('$ {}'.format(line))
         return os.system(line)
 
-    def get_sudo_user(self, sudo=None):
+    @staticmethod
+    def get_sudo_user(sudo=None):
         if sudo is True:
             sudo = Env.get(Env.JUMON_SUDO)
         return sudo
 
-    def switch_insert_sudo(self, line, sudo=None, *args, **kwds):
-        sudo = self.get_sudo_user(sudo)
+    @classmethod
+    def switch_insert_sudo(cls, line, sudo=None, *args, **kwds):
+        sudo = Shell.get_sudo_user(sudo)
         if sudo:
             line = 'sudo -u {} {}'.format(sudo, line)
         return line
