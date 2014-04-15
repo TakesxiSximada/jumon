@@ -88,6 +88,7 @@ class Env(enum.Enum):
             return env.value
 
 class Shell(object):
+
     @classmethod
     def call(cls, line, *args, **kwds):
         line = self.switch_insert_sudo(line, *args, **kwds)
@@ -104,10 +105,13 @@ class Shell(object):
         print('$ {}'.format(line))
         return os.system(line)
 
-    def switch_insert_sudo(self, line, sudo=None, *args, **kwds):
+    def get_sudo_user(self, sudo=None):
         if sudo is True:
             sudo = Env.get(Env.JUMON_SUDO)
+        return sudo
 
+    def switch_insert_sudo(self, line, sudo=None, *args, **kwds):
+        sudo = self.get_sudo_user(sudo)
         if sudo:
             line = 'sudo -u {} {}'.format(sudo, line)
         return line
