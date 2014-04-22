@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 """The small framework for sub commands.
 """
-__version__ = "1.1.2"
+__version__ = "1.1.3"
 __all__ = ['TransparentOptionParser',
            'TransparentArgumentParser',
            'Shell',
@@ -91,7 +91,7 @@ class Shell(object):
 
     @classmethod
     def call(cls, line, *args, **kwds):
-        line = cls.switch_insert_sudo(line, *args, **kwds)
+        line, args, kwds = cls.switch_insert_sudo(line, *args, **kwds)
         print('')
         print('$ {}'.format(line))
         if not 'shell' in kwds:
@@ -100,7 +100,7 @@ class Shell(object):
 
     @classmethod
     def system(cls, line, *args, **kwds):
-        line = cls.switch_insert_sudo(line, *args, **kwds)
+        line, args, kwds = cls.switch_insert_sudo(line, *args, **kwds)
         print('')
         print('$ {}'.format(line))
         return os.system(line)
@@ -116,7 +116,7 @@ class Shell(object):
         sudo = Shell.get_sudo_user(sudo)
         if sudo:
             line = 'sudo -u {} {}'.format(sudo, line)
-        return line
+        return line, args, kwds
 
     @classmethod
     def sudo(cls, line, *args, **kwds):
