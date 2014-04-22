@@ -164,6 +164,12 @@ def call(line, background=False, *args, **kwds):
 
 
 class TransparentOptionParser(optparse.OptionParser):
+    def __new__(cls, *args, **kwds):
+        if len(args) < 8 or not kwds.has_key('add_help_option'):
+            kwds['add_help_option'] = None # default value orverride
+        return super(type(cls), cls).__new__(cls, *args, **kwds)
+
+
     # over ride on arguments from 'rargs' 'values' consuming.
     def _process_args(self, largs, rargs, values):
         """_process_args(largs : [string],
@@ -192,7 +198,9 @@ class TransparentOptionParser(optparse.OptionParser):
                 return
             elif arg[0:2] == "--":
                 # process a single long option (possibly with value(s))
-                self._process_long_opt(rargs, values)
+                # self._process_long_opt(rargs, values)
+                _through_option(self._process_long_opt, rargs, values) #modified
+
             elif arg[:1] == "-" and len(arg) > 1:
                 # process a cluster of short options (possibly with
                 # value(s) for the last one only)
@@ -230,9 +238,14 @@ class TransparentOptionParser(optparse.OptionParser):
 
 
 class TransparentArgumentParser(argparse.ArgumentParser):
+    def __new__(cls, *args, **kwds):
+        if len(args) < 12 or not kwds.has_key('add_help'):
+            kwds['add_help'] = None # default value orverride
+        return super(type(cls), cls).__new__(cls, *args, **kwds)
+
     def parse_args(self, *args, **kwds):
         args, _unrecognizes = self.parse_known_args(*args, **kwds)
-        self.unrecognizes = unrecognizes
+        self._unrecognizes = _unrecognizes
         return args
 
     def get_unrecognizes(self):
