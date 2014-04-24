@@ -27,7 +27,7 @@ classifiers = [
 
 setup(
     name='jumon',
-    version='1.1.7',
+    version='1.1.8',
     url='http://sximadaw3.web.fc2.com/work/jumon',
     download_url='https://bitbucket.org/takesxi_sximada/jumon',
     license='Apache License 2.0',
