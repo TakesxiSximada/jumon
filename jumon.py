@@ -106,7 +106,7 @@ class Shell(object):
         print('$ {}'.format(line))
         return os.system(line)
 
-    @classmthod
+    @classmethod
     def get_sudo_user(cls, sudo=None):
         if sudo is True:
             sudo = Env.get(Env.JUMON_SUDO)
