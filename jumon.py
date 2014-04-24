@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 """The small framework for sub commands.
 """
-__version__ = "1.1.8"
+__version__ = "1.1.9"
 __all__ = ['TransparentOptionParser',
            'TransparentArgumentParser',
            'Shell',
@@ -114,7 +114,7 @@ class Shell(object):
 
     @classmethod
     def switch_insert_sudo(cls, line, sudo=None, *args, **kwds):
-        sudo = cls.get_sudo_user(cls, sudo)
+        sudo = cls.get_sudo_user(sudo)
         if sudo:
             line = 'sudo -u {} {}'.format(sudo, line)
         return line, args, kwds
