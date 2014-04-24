@@ -59,6 +59,7 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 import os
+import re
 import sys
 import shlex
 import optparse
@@ -279,7 +280,33 @@ def entry(prefix, argv=sys.argv[1:], parser=None):
     _debug = get_debug_switch()
     if not parser:
         parser = TransparentOptionParser()
+        parser.add_option('--command-list', dest='command_list', default=False, action='store_true')
     opts, args = parser.parse_args(argv)
+
+    if opts.command_list:
+        print('Sub commmands:')
+        dotteds = prefix.split('.')
+        base_name = dotteds[0]
+        base_mod = __import__(base_name)
+
+        rel_mod_names = dotteds[1:]
+        mod = base_mod
+        for name in rel_mod_names:
+            mod = getattr(mod, name)
+
+        regx_py = re.compile('.*\.py$', re.I)
+        top_dir = os.path.abspath(os.path.dirname(mod.__file__))
+        for root, dirs, files in os.walk(top_dir):
+            for filename in files:
+                if regx_py.match(filename):
+                    if filename == '__init__.py':
+                        path = root
+                    else:
+                        path = os.path.join(root, os.path.splitext(filename)[0])
+                    path = path.replace(top_dir, '')
+                    cmdline = path.split('/')
+                    print(' '.join(cmdline))
+        sys.exit(255)
 
     if prefix.endswith('.'):
         prefix = prefix.strip('.')
