@@ -106,15 +106,15 @@ class Shell(object):
         print('$ {}'.format(line))
         return os.system(line)
 
-    @staticmethod
-    def get_sudo_user(sudo=None):
+    @classmthod
+    def get_sudo_user(cls, sudo=None):
         if sudo is True:
             sudo = Env.get(Env.JUMON_SUDO)
         return sudo
 
     @classmethod
     def switch_insert_sudo(cls, line, sudo=None, *args, **kwds):
-        sudo = Shell.get_sudo_user(sudo)
+        sudo = cls.get_sudo_user(sudo)
         if sudo:
             line = 'sudo -u {} {}'.format(sudo, line)
         return line, args, kwds
