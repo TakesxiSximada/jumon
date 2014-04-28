@@ -165,10 +165,10 @@ def call(line, background=False, *args, **kwds):
 
 
 class TransparentOptionParser(optparse.OptionParser):
-    def __new__(cls, *args, **kwds):
+    def __init__(self, *args, **kwds):
         if len(args) < 8 or not kwds.has_key('add_help_option'):
             kwds['add_help_option'] = None # default value orverride
-        return super(type(cls), cls).__new__(cls, *args, **kwds)
+        return optparse.OptionParser.__init__(self, *args, **kwds)
 
 
     # over ride on arguments from 'rargs' 'values' consuming.
@@ -239,10 +239,10 @@ class TransparentOptionParser(optparse.OptionParser):
 
 
 class TransparentArgumentParser(argparse.ArgumentParser):
-    def __new__(cls, *args, **kwds):
+    def __init__(self, *args, **kwds):
         if len(args) < 12 or not kwds.has_key('add_help'):
             kwds['add_help'] = None # default value orverride
-        return super(type(cls), cls).__new__(cls, *args, **kwds)
+        return super(type(self), self).__init__(*args, **kwds)
 
     def parse_args(self, *args, **kwds):
         args, _unrecognizes = self.parse_known_args(*args, **kwds)
@@ -259,7 +259,6 @@ def get_debug_switch():
     >>> os.environ['JUMON_DEBUG'] = 'True'
     >>> jumon.get_debug_switch()
     True
-
 
 
     >>> os.environ['JUMON_DEBUG'] = ''
