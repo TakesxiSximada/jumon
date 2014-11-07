@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """The small framework for sub commands.
 """
 __version__ = "1.1.10"
@@ -67,12 +67,14 @@ import argparse
 import subprocess
 import enum
 
+
 def escape(word):
     if ' ' in word:
         word = word.replace('"', '\\"')
         word = word.replace("'", "\\'")
         word = '"' + word + '"'
     return word
+
 
 def escape_join(words):
     return ' '.join(map(escape, words))
@@ -85,8 +87,9 @@ class Env(enum.Enum):
     def get(cls, env):
         try:
             return os.environ[env.name]
-        except KeyError as err:
+        except KeyError:
             return env.value
+
 
 class Shell(object):
 
@@ -95,7 +98,7 @@ class Shell(object):
         line, args, kwds = cls.switch_insert_sudo(line, *args, **kwds)
         print('')
         print('$ {}'.format(line))
-        if not 'shell' in kwds:
+        if 'shell' not in kwds:
             kwds['shell'] = True
         return subprocess.Popen(line, *args, **kwds)
 
@@ -155,6 +158,7 @@ def mkdir(path, parents=False):
         if not parents:
             raise
 
+
 def call(line, background=False, *args, **kwds):
     print('$ ' + line)
     cmd = shlex.split(line.strip())
@@ -166,10 +170,9 @@ def call(line, background=False, *args, **kwds):
 
 class TransparentOptionParser(optparse.OptionParser):
     def __init__(self, *args, **kwds):
-        if len(args) < 8 or not kwds.has_key('add_help_option'):
-            kwds['add_help_option'] = None # default value orverride
+        if len(args) < 8 or 'add_help_option' not in kwds:
+            kwds['add_help_option'] = None  # default value orverride
         return optparse.OptionParser.__init__(self, *args, **kwds)
-
 
     # over ride on arguments from 'rargs' 'values' consuming.
     def _process_args(self, largs, rargs, values):
@@ -186,7 +189,7 @@ class TransparentOptionParser(optparse.OptionParser):
             """new function"""
             try:
                 func(*args, **kwds)
-            except optparse.BadOptionError, err:
+            except optparse.BadOptionError as err:
                 largs.append(err.opt_str)
 
         while rargs:
@@ -200,12 +203,12 @@ class TransparentOptionParser(optparse.OptionParser):
             elif arg[0:2] == "--":
                 # process a single long option (possibly with value(s))
                 # self._process_long_opt(rargs, values)
-                _through_option(self._process_long_opt, rargs, values) #modified
+                _through_option(self._process_long_opt, rargs, values)  # modified
 
             elif arg[:1] == "-" and len(arg) > 1:
                 # process a cluster of short options (possibly with
                 # value(s) for the last one only)
-                _through_option(self._process_short_opts, rargs, values) #modified
+                _through_option(self._process_short_opts, rargs, values)  # modified
             elif self.allow_interspersed_args:
                 largs.append(arg)
                 del rargs[0]
@@ -240,8 +243,8 @@ class TransparentOptionParser(optparse.OptionParser):
 
 class TransparentArgumentParser(argparse.ArgumentParser):
     def __init__(self, *args, **kwds):
-        if len(args) < 12 or not kwds.has_key('add_help'):
-            kwds['add_help'] = None # default value orverride
+        if len(args) < 12 or 'add_help' not in kwds:
+            kwds['add_help'] = None  # default value orverride
         return super(type(self), self).__init__(*args, **kwds)
 
     def parse_args(self, *args, **kwds):
@@ -251,6 +254,7 @@ class TransparentArgumentParser(argparse.ArgumentParser):
 
     def get_unrecognizes(self):
         return self._unrecognizes
+
 
 def get_debug_switch():
     """The debug switcher
@@ -274,6 +278,7 @@ def get_debug_switch():
         return os.environ['JUMON_DEBUG'] != ''
     except KeyError:
         pass
+
 
 def entry(prefix, argv=sys.argv[1:], parser=None):
     _debug = get_debug_switch()
@@ -319,7 +324,7 @@ def entry(prefix, argv=sys.argv[1:], parser=None):
             base_mod = __import__(doted_name)
         except (ImportError, ValueError) as err:
             if _debug:
-                print err
+                print(err)
             continue
         else:
             try:
