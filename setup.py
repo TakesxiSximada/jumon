@@ -28,7 +28,7 @@ classifiers = [
 
 setup(
     name='jumon',
-    version='1.1.10',
+    version='1.1.11',
     url='https://github.com/TakesxiSximada/jumon',
     license='Apache License 2.0',
     author='TakesxiSximada',
