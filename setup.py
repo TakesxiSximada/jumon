@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -38,7 +38,8 @@ setup(
     zip_safe=False,
     classifiers=classifiers,
     platforms='any',
-    py_modules=['jumon'],
+    packages=find_packages('src', exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
+    package_dir={'': 'src'},
     include_package_data=True,
     install_requires=requires,
     )
