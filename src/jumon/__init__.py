@@ -1,7 +1,17 @@
 # -*- coding: utf-8 -*-
 """The small framework for sub commands.
 """
-__version__ = "1.1.11"
+
+import os
+import re
+import sys
+import shlex
+import optparse
+import argparse
+import subprocess
+import enum
+
+__version__ = "1.2.dev1"
 __all__ = ['TransparentOptionParser',
            'TransparentArgumentParser',
            'Shell',
@@ -58,14 +68,6 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-import os
-import re
-import sys
-import shlex
-import optparse
-import argparse
-import subprocess
-import enum
 
 
 def escape(word):
