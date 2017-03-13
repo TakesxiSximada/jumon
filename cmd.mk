@@ -43,5 +43,7 @@ clean:
 .PHONY: help
 help:
 	@# Display usage
+	@#
+	@# See: https://github.com/TakesxiSximada/unmake
 
 	unmake $(MAKEFILE_LIST)
