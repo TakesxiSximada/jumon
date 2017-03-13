@@ -7,7 +7,7 @@ It finds importable sub module from the arguments passed,
 Runs main function in the importable sub module with arguments.
 
 You can be displayed the hierarchial structure of the sub commands
-with tree command etc, because it be implementing sub commands as 
+with tree command etc, because it be implementing sub commands as
 the hierarchial structure of the sub module.
 It will be easy to see where sub command has been implemented.
 
@@ -26,12 +26,12 @@ by pip (from PyPI)
 ::
 
     $ pip install jumon
-    
+
 How to use
 ============
 
 This is a description of how to use the jumon.
-Let create a package called "testcmd", 
+Let create a package called "testcmd",
 and sub package called "testcmd.command".
 
 ::
@@ -105,7 +105,7 @@ test.py::
 
     #! /usr/bin/env python
     import testcmd.command
-    
+
     def main():
         testcmd.command.main()
 
@@ -118,10 +118,10 @@ Add permission::
 
 Run, displayed usage.::
 
-    $ ./test.py    
+    $ ./test.py
     Usage: test.py [options]
 
-    test.py: error: Command Not Found: 
+    test.py: error: Command Not Found:
 
 Run sub command "aaa".::
 
@@ -188,8 +188,10 @@ You can use *jumon.TransparentOptionParser()* class.
 
 Requirements
 ============
-* Python 2.6 or laterr (not supprt 3.x)
+
+* Python 2.7 or later
 
 License
 =======
+
 Apache License 2.0
